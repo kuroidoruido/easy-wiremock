@@ -1,0 +1,19 @@
+[data-route="WiremockRequests"] {
+  details {
+    background-color: light-dark(rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.1));
+    padding: 0.75rem 0.5rem;
+  }
+
+  section.requests {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+
+    & > details.request-entry {
+      margin: 0;
+      & > summary {
+        padding-left: 1rem;
+      }
+    }
+  }
+}

@@ -73,3 +73,66 @@ export function useWiremockMappings(serverId: string) {
     queryFn: () => getAdminReq<Mappings>(server?.url, "mappings"),
   });
 }
+
+export interface Requests {
+  requests: WRequest[];
+  meta: {
+    total: number;
+  };
+  requestJournalDisabled: boolean;
+}
+
+export interface WRequest {
+  id: string;
+  request: {
+    url: string;
+    absoluteUrl: string;
+    method: Method;
+    clientIp: string;
+    headers: Record<string, string>;
+    cookies: Record<string, string>;
+    browserProxyRequest: boolean;
+    loggedDate: number;
+    bodyAsBase64: string;
+    body: string;
+    loggedDateString: Date;
+    protocol: string;
+    scheme: string;
+    host: string;
+    port: number;
+    queryParams: Record<string, string>;
+    formParams: Record<string, string>;
+  };
+  responseDefinition: {
+    status: number;
+    jsonBody?: unknown;
+    headers?: Record<string, string>;
+    transformers: unknown[];
+    fromConfiguredStub: boolean;
+    transformerParameters: unknown;
+  };
+  response: {
+    status: 200;
+    headers: Record<string, string>;
+    bodyAsBase64: string;
+    body: string;
+  };
+  wasMatched: boolean;
+  timing: {
+    addedDelay: number;
+    processTime: number;
+    responseSendTime: number;
+    serveTime: number;
+    totalTime: number;
+  };
+  subEvents: unknown[];
+  stubMapping: Mapping;
+}
+
+export function useWiremockRequests(serverId: string) {
+  const server = useServer(serverId);
+  return useQuery({
+    queryKey: [server?.url, "admin", "requests"],
+    queryFn: () => getAdminReq<Requests>(server?.url, "requests"),
+  });
+}
