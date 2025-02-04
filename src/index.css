@@ -36,3 +36,15 @@
     }
   }
 }
+
+:root {
+  --color--red: #e90000;
+  --color--orange: #ff6100;
+  --color--yellow: #fff500;
+  --color--green: #31d5c8;
+  --color--lightblue: #33a7c8;
+  --color--darkblue: #001eba;
+  --color--purple: #a538c6;
+  --color--lightgray: #d1dbe4;
+  --color--darkgray: #646f77;
+}

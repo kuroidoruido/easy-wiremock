@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "HEAD",
+    "url": "/api/simple-head"
+  },
+  "response": {
+    "status": 200
+  }
+}

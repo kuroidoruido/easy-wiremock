@@ -1,0 +1,9 @@
+{
+  "request": {
+    "url": "/api/simple-url"
+  },
+  "response": {
+    "status": 200,
+    "body": "More content\n"
+  }
+}

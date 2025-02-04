@@ -1,0 +1,15 @@
+{
+  "request": {
+    "method": "PATCH",
+    "url": "/api/simple-patch-json"
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "jsonBody": {
+      "foo": "bar"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "request": {
+    "method": "OPTIONS",
+    "url": "/api/simple-options"
+  },
+  "response": {
+    "status": 200
+  }
+}

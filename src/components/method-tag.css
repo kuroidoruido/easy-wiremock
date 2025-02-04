@@ -1,0 +1,40 @@
+.method-tag-wrapper {
+  display: inline-block;
+  min-width: 5.5rem;
+  padding: 0;
+
+  .method-tag {
+    border: 1px solid light-dark(black, white);
+    border-radius: 3px;
+    padding: 0.25rem 0.5rem;
+    margin: 0;
+    color: black;
+
+    &.ANY {
+      background-color: var(--color--darkgray);
+      color: white;
+    }
+    &.DELETE {
+      background-color: var(--color--red);
+    }
+    &.GET {
+      background-color: var(--color--green);
+    }
+    &.HEAD {
+      background-color: var(--color--purple);
+      color: white;
+    }
+    &.OPTIONS {
+      background-color: var(--color--lightgray);
+    }
+    &.PATCH {
+      background-color: var(--color--yellow);
+    }
+    &.POST {
+      background-color: var(--color--lightblue);
+    }
+    &.PUT {
+      background-color: var(--color--orange);
+    }
+  }
+}
