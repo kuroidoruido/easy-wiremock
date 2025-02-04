@@ -125,8 +125,8 @@ export interface WRequest {
     serveTime: number;
     totalTime: number;
   };
-  subEvents: unknown[];
-  stubMapping: Mapping;
+  subEvents?: unknown[];
+  stubMapping?: Mapping;
 }
 
 export function useWiremockRequests(serverId: string) {

@@ -1,3 +1,4 @@
+import { ObjectAsTable } from "../../components/object-as-table";
 import { useServer } from "../../services/servers";
 import { useWiremockServerHealth } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
@@ -11,16 +12,7 @@ export function WiremockServer({ serverId }: PropsWithServerId) {
       <article>
         <header>Health</header>
         <main>
-          <table>
-            <tbody>
-              {Object.entries(health.data ?? {}).map(([k, v]) => (
-                <tr key={k}>
-                  <th>{k}</th>
-                  <td>{v}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ObjectAsTable json={health.data} />
         </main>
       </article>
     </>

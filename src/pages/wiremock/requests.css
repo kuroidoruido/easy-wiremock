@@ -13,6 +13,10 @@
       margin: 0;
       & > summary {
         padding-left: 1rem;
+        display: flex;
+        & > :first-child {
+          flex: 1;
+        }
       }
     }
   }

@@ -1,0 +1,11 @@
+table.object-as-table {
+  table-layout: fixed;
+  tr {
+    position: relative;
+    td,
+    th {
+      max-width: 40rem;
+      overflow-x: auto;
+    }
+  }
+}
