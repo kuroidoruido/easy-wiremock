@@ -6,5 +6,8 @@
   "response": {
     "status": 200,
     "body": "More content\n"
+  },
+  "metadata": {
+    "group": "get"
   }
 }

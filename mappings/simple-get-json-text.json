@@ -9,5 +9,8 @@
       "Content-Type": "application/json"
     },
     "body": "{\"foo\":\"bar\"}"
+  },
+  "metadata": {
+    "group": "get"
   }
 }

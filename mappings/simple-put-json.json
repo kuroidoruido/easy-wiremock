@@ -11,5 +11,12 @@
     "jsonBody": {
       "foo": "bar"
     }
+  },
+  "metadata": {
+    "singleItem": 1234,
+    "listItem": [1, 2, 3, 4],
+    "nestedObject": {
+      "innerItem": "Hello"
+    }
   }
 }

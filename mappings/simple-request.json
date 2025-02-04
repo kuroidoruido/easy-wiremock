@@ -5,5 +5,12 @@
   "response": {
     "status": 200,
     "body": "More content\n"
+  },
+  "metadata": {
+    "singleItem": 1234,
+    "listItem": [1, 2, 3, 4],
+    "nestedObject": {
+      "innerItem": "Hello"
+    }
   }
 }

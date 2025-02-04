@@ -11,5 +11,8 @@
     "jsonBody": {
       "foo": "bar"
     }
+  },
+  "metadata": {
+    "group": "get"
   }
 }

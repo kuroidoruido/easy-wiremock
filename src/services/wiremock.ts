@@ -64,6 +64,7 @@ export interface Mapping {
     bodyFileName?: string;
     base64Body?: string;
   };
+  metadata?: Record<string, unknown>;
 }
 
 export function useWiremockMappings(serverId: string) {

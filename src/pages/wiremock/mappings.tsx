@@ -1,4 +1,6 @@
+import { isDefined } from "@anthonypena/fp";
 import { MethodTag } from "../../components/method-tag";
+import { ObjectAsTable } from "../../components/object-as-table";
 import { RawJson } from "../../components/raw-json";
 import { useWiremockMappings } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
@@ -17,6 +19,28 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
               <MethodTag method={mapping.request.method} />{" "}
               {mapping.request.urlPattern ?? mapping.request.url}
             </summary>
+            <section>
+              <h3>General Infos</h3>
+              <ObjectAsTable
+                json={{
+                  id: mapping.id,
+                }}
+              />
+            </section>
+            {isDefined(mapping.metadata) && (
+              <section>
+                <h3>Metadata</h3>
+                <ObjectAsTable json={mapping.metadata} />
+              </section>
+            )}
+            <section>
+              <h3>Request</h3>
+              <ObjectAsTable json={mapping.request} />
+            </section>
+            <section>
+              <h3>Response</h3>
+              <ObjectAsTable json={mapping.response} />
+            </section>
             <RawJson label="Raw mapping" json={mapping} />
           </details>
         ))}
