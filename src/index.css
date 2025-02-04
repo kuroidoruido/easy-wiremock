@@ -48,3 +48,10 @@
   --color--lightgray: #d1dbe4;
   --color--darkgray: #646f77;
 }
+
+button {
+  &.danger {
+    background-color: var(--color--red);
+    color: black;
+  }
+}

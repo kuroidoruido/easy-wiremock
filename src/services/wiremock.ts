@@ -1,8 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServer } from "./servers";
 
 function buildAdminReq(baseUrl: string | undefined, adminPath: string) {
   return `${baseUrl}/__admin/${adminPath}`;
+}
+function deleteAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
+  return fetch(buildAdminReq(baseUrl, adminPath), { method: "DELETE" }).then(
+    (res): Promise<T> => res.json()
+  );
 }
 function getAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
   return fetch(buildAdminReq(baseUrl, adminPath)).then(
@@ -69,10 +74,22 @@ export interface Mapping {
 
 export function useWiremockMappings(serverId: string) {
   const server = useServer(serverId);
-  return useQuery({
+  const client = useQueryClient();
+  const mappings = useQuery({
     queryKey: [server?.url, "admin", "mappings"],
     queryFn: () => getAdminReq<Mappings>(server?.url, "mappings"),
   });
+
+  const deleteOneMapping = useMutation({
+    mutationFn: (mappingId: string) =>
+      deleteAdminReq(server?.url, `mappings/${mappingId}`).then(() => {
+        client.invalidateQueries({
+          queryKey: [server?.url, "admin", "mappings"],
+        });
+      }),
+  });
+
+  return { mappings, deleteOneMapping } as const;
 }
 
 export interface Requests {
