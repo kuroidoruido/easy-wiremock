@@ -1,0 +1,8 @@
+#root > header {
+  nav > ul:first-child {
+    li:not(:first-child)::before {
+      content: ">";
+      padding-right: 1rem;
+    }
+  }
+}

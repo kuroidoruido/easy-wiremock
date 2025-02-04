@@ -1,17 +1,14 @@
 import "./App.css";
-import { useAppInfos } from "./services/app";
+import { AppFooter } from "./components/layout/footer";
+import { AppHeader } from "./components/layout/header";
+import { AppRouting } from "./config/router";
 
 export function App() {
-  const { data } = useAppInfos();
   return (
     <>
-      <header>
-        <h1>Easy Wiremock</h1>
-      </header>
-      <main></main>
-      <footer>
-        {data?.name} - v{data?.version}
-      </footer>
+      <AppHeader />
+      <AppRouting />
+      <AppFooter />
     </>
   );
 }
