@@ -6,12 +6,12 @@ function buildAdminReq(baseUrl: string | undefined, adminPath: string) {
 }
 function deleteAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
   return fetch(buildAdminReq(baseUrl, adminPath), { method: "DELETE" }).then(
-    (res): Promise<T> => res.json()
+    (res): Promise<T> => res.json(),
   );
 }
 function getAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
   return fetch(buildAdminReq(baseUrl, adminPath)).then(
-    (res): Promise<T> => res.json()
+    (res): Promise<T> => res.json(),
   );
 }
 
@@ -56,6 +56,8 @@ export interface Mapping {
   request: {
     method?: Method;
     url?: string;
+    urlPath?: string;
+    urlPathPattern?: string;
     urlPattern?: string;
     headers?: Record<string, string>;
     bodyPatterns?: BodyPattern[];
