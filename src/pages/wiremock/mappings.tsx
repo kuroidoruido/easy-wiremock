@@ -17,7 +17,7 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
           <details className="mapping-entry" key={mapping.id}>
             <summary>
               <MethodTag method={mapping.request.method} />{" "}
-              {mapping.request.urlPattern ?? mapping.request.url}
+              {mapping.request.urlPathPattern ?? mapping.request.urlPattern ?? mapping.request.urlPath ?? mapping.request.url}
             </summary>
             <section>
               <h3>Quick actions</h3>
