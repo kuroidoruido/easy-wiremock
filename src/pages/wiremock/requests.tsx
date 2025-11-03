@@ -8,10 +8,13 @@ import { PropsWithServerId } from "../../utils/router";
 import "./requests.css";
 
 export function WiremockRequests({ serverId }: PropsWithServerId) {
-  const requests = useWiremockRequests(serverId);
+  const { requests, deleteAllRequests } = useWiremockRequests(serverId);
   return (
     <>
-      <h2>Requests ({requests.data?.meta.total})</h2>
+      <div className="page-heading-row">
+        <h2>Requests ({requests.data?.meta.total})</h2>
+        <button className="danger" onClick={() => deleteAllRequests.mutate()}>🗑️ Delete all requests</button>
+      </div>
       <section className="requests">
         {requests.data?.requests.map((request) => (
           <details className="request-entry" key={request.id}>
