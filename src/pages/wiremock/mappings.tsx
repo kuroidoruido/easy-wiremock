@@ -8,10 +8,13 @@ import { PropsWithServerId } from "../../utils/router";
 import "./mappings.css";
 
 export function WiremockMappings({ serverId }: PropsWithServerId) {
-  const { mappings, deleteOneMapping } = useWiremockMappings(serverId);
+  const { mappings, deleteOneMapping, deleteAllMappings } = useWiremockMappings(serverId);
   return (
     <>
-      <h2>Mappings ({mappings.data?.meta.total})</h2>
+      <div className="page-heading-row">
+        <h2>Mappings ({mappings.data?.meta.total})</h2>
+        <button className="danger" onClick={() => deleteAllMappings.mutate()}>🗑️ Delete all mappings</button>
+      </div>
       <section className="mappings">
         {mappings.data?.mappings.map((mapping) => (
           <details className="mapping-entry" key={mapping.id}>

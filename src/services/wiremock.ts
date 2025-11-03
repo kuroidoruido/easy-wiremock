@@ -91,7 +91,16 @@ export function useWiremockMappings(serverId: string) {
       }),
   });
 
-  return { mappings, deleteOneMapping } as const;
+  const deleteAllMappings = useMutation({
+    mutationFn: () =>
+      deleteAdminReq(server?.url, 'mappings').then(() => {
+        client.invalidateQueries({
+          queryKey: [server?.url, "admin", "mappings"],
+        });
+      }),
+  });
+
+  return { mappings, deleteOneMapping, deleteAllMappings } as const;
 }
 
 export interface Requests {
@@ -151,8 +160,21 @@ export interface WRequest {
 
 export function useWiremockRequests(serverId: string) {
   const server = useServer(serverId);
-  return useQuery({
+  const client = useQueryClient();
+
+  const requests = useQuery({
     queryKey: [server?.url, "admin", "requests"],
     queryFn: () => getAdminReq<Requests>(server?.url, "requests"),
   });
+
+  const deleteAllRequests = useMutation({
+    mutationFn: () =>
+      deleteAdminReq(server?.url, 'requests').then(() => {
+        client.invalidateQueries({
+          queryKey: [server?.url, "admin", "requests"],
+        });
+      }),
+  });
+
+  return { requests, deleteAllRequests } as const;
 }
