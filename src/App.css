@@ -12,9 +12,3 @@
   flex: 1;
   padding: 1rem;
 }
-
-#root > footer {
-  text-align: right;
-  padding: 0.25rem 1rem;
-  border-top: 1px solid lightgray;
-}
