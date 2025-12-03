@@ -56,7 +56,32 @@ export function useServers() {
         }
       }),
   });
-  return { servers, pushOneServer } as const;
+  const removeOnServer = useMutation({
+    mutationFn: (serverId: string) =>
+      new Promise((resolve, reject) => {
+        const serversInLocalStorage = localStorage.getItem(
+          LOCAL_STORAGE_SERVERS_KEY
+        );
+        try {
+          if (isDefinedAndNotEmpty(serversInLocalStorage)) {
+            localStorage.setItem(
+              LOCAL_STORAGE_SERVERS_KEY,
+              JSON.stringify(JSON.parse(serversInLocalStorage).filter(({ id }: Server) => id !== serverId))
+            );
+          } else {
+            localStorage.setItem(
+              LOCAL_STORAGE_SERVERS_KEY,
+              '[]'
+            );
+          }
+          resolve(null);
+          client.invalidateQueries({ queryKey: buildQueryKey() });
+        } catch {
+          reject(null);
+        }
+      }),
+  });
+  return { servers, pushOneServer, removeOnServer } as const;
 }
 
 export function useServer(serverId: string) {

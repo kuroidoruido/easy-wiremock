@@ -1,4 +1,4 @@
-import { Router } from "../config/router";
+import { ServerCard } from "../components/server-card";
 import { Server, useServers } from "../services/servers";
 import { useSubmitCallback } from "../utils/form";
 
@@ -15,22 +15,16 @@ export function Home() {
 }
 
 function ServerList() {
-  const { servers } = useServers();
+  const { servers, removeOnServer } = useServers();
   return (
     <section>
       <h2>Choose your server</h2>
-      {servers.data?.map((server) => (
-        <article
-          className="server-card"
+      {servers.data?.map((server) => 
+        <ServerCard
           key={server.id}
-          onClick={() => Router.push("Wiremock", { serverId: server.id })}
-        >
-          <main>
-            <h3>{server.label}</h3>
-            <p>{server.url}</p>
-          </main>
-        </article>
-      ))}
+          server={server}
+          onRemove={(id) => removeOnServer.mutate(id)}
+        />)}
     </section>
   );
 }
