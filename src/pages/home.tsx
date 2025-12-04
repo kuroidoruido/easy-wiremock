@@ -17,14 +17,16 @@ export function Home() {
 function ServerList() {
   const { servers, removeOnServer } = useServers();
   return (
-    <section>
+    <section className="server-list">
       <h2>Choose your server</h2>
-      {servers.data?.map((server) => 
-        <ServerCard
+      <div className="server-list-container">
+        {servers.data?.map((server) => 
+          <ServerCard
           key={server.id}
           server={server}
           onRemove={(id) => removeOnServer.mutate(id)}
         />)}
+      </div>
     </section>
   );
 }

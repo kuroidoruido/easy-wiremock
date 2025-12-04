@@ -1,5 +1,5 @@
 article.server-card {
-    min-width: 30rem;
+    min-width: 25rem;
 
     &:hover:not(:has(.btn-dropdown-menu:hover)) {
         cursor: pointer;
