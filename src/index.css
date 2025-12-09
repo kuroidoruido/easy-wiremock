@@ -85,8 +85,12 @@ button {
             white-space: nowrap;
             background: transparent;
             border: none;
+            color: var(--pico-dropdown-color);
             &:first-of-type {
                 margin-top: calc(var(--pico-form-element-spacing-vertical) * .5);
+            }
+            &:hover {
+              background-color: var(--pico-dropdown-hover-background-color);
             }
         }
     }
