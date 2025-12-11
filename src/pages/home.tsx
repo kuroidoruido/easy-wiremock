@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { ServerCard } from "../components/server-card";
 import { Server, useServers } from "../services/servers";
 import { useSubmitCallback } from "../utils/form";
 
 import "./home.css";
+import { isDefinedAndNotEmpty } from "@anthonypena/fp";
 
 export function Home() {
   return (
@@ -15,19 +17,25 @@ export function Home() {
 }
 
 function ServerList() {
-  const { servers, removeOnServer } = useServers();
+  const { servers, removeOneServer } = useServers();
+  const [editingServer, setEditingServer] = useState<string|null>(null);
+  const isEditing = isDefinedAndNotEmpty(editingServer);
   return (
-    <section className="server-list">
-      <h2>Choose your server</h2>
-      <div className="server-list-container">
-        {servers.data?.map((server) => 
-          <ServerCard
-          key={server.id}
-          server={server}
-          onRemove={(id) => removeOnServer.mutate(id)}
-        />)}
-      </div>
-    </section>
+    <>
+      <section className="server-list">
+        <h2>Choose your server</h2>
+        <div className="server-list-container">
+          {servers.data?.map((server) => 
+            <ServerCard
+            key={server.id}
+            server={server}
+            onEdit={setEditingServer}
+            onRemove={(id) => removeOneServer.mutate(id)}
+          />)}
+        </div>
+      </section>
+      {isEditing && <EditServerModal serverId={editingServer} onClose={() => setEditingServer(null)} />}
+    </>
   );
 }
 
@@ -47,4 +55,34 @@ export function AddNewServer() {
       </form>
     </article>
   );
+}
+
+interface EditServerModalProps {
+  serverId: string;
+  onClose(): void;
+}
+
+export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
+  const { getOneServer, updateOneServer } = useServers();
+  const server = getOneServer(serverId)!;
+  const onSubmit = useSubmitCallback<Server>((formState) => {
+    updateOneServer.mutate(formState);
+    onClose();
+  });
+  return <dialog open>
+        <article>
+          <header>
+            <button aria-label="Close" rel="prev" onClick={onClose}></button>
+            <p>
+              <strong>✏️ Edit {server.label}</strong>
+            </p>
+          </header>
+          <form onSubmit={onSubmit}>
+            <input type="hidden" name="id" defaultValue={server.id} />
+            <input type="text" name="url" placeholder="http://localhost:8080" defaultValue={server.url} />
+            <input type="text" name="label" placeholder="My wiremock instance" defaultValue={server.label} />
+            <button>Update server</button>
+          </form>
+        </article>
+    </dialog>
 }

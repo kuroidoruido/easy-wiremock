@@ -1,5 +1,5 @@
 import { isDefinedAndNotEmpty } from "@anthonypena/fp";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export interface Server {
   id: string;
@@ -30,61 +30,55 @@ export function useServers() {
       }),
   });
 
-  const pushOneServer = useMutation({
-    mutationFn: (newServer: Server) =>
-      new Promise((resolve, reject) => {
-        const serversInLocalStorage = localStorage.getItem(
-          LOCAL_STORAGE_SERVERS_KEY
-        );
-        try {
-          newServer.id = crypto.randomUUID();
-          if (isDefinedAndNotEmpty(serversInLocalStorage)) {
-            localStorage.setItem(
-              LOCAL_STORAGE_SERVERS_KEY,
-              JSON.stringify([...JSON.parse(serversInLocalStorage), newServer])
-            );
-          } else {
-            localStorage.setItem(
-              LOCAL_STORAGE_SERVERS_KEY,
-              JSON.stringify([newServer])
-            );
-          }
-          resolve(null);
-          client.invalidateQueries({ queryKey: buildQueryKey() });
-        } catch {
-          reject(null);
-        }
-      }),
-  });
-  const removeOnServer = useMutation({
-    mutationFn: (serverId: string) =>
-      new Promise((resolve, reject) => {
-        const serversInLocalStorage = localStorage.getItem(
-          LOCAL_STORAGE_SERVERS_KEY
-        );
-        try {
-          if (isDefinedAndNotEmpty(serversInLocalStorage)) {
-            localStorage.setItem(
-              LOCAL_STORAGE_SERVERS_KEY,
-              JSON.stringify(JSON.parse(serversInLocalStorage).filter(({ id }: Server) => id !== serverId))
-            );
-          } else {
-            localStorage.setItem(
-              LOCAL_STORAGE_SERVERS_KEY,
-              '[]'
-            );
-          }
-          resolve(null);
-          client.invalidateQueries({ queryKey: buildQueryKey() });
-        } catch {
-          reject(null);
-        }
-      }),
-  });
-  return { servers, pushOneServer, removeOnServer } as const;
+  function getOneServer(serverId: string): Server | undefined {
+    return servers.data?.find(s => s.id === serverId) ?? undefined;
+  }
+
+  const pushOneServer = useLocalStorageMutation<Server, Server>(client, 
+    LOCAL_STORAGE_SERVERS_KEY, 
+    (newServer: Server) => (actual: Server[]) => {
+      newServer.id = crypto.randomUUID();
+      return [...actual, newServer];
+    });
+
+  const updateOneServer = useLocalStorageMutation<Server, Server>(client, 
+    LOCAL_STORAGE_SERVERS_KEY, 
+    (newServer: Server) => (actual: Server[]) => {
+      return actual.map((server: Server) => server.id === newServer.id ? newServer : server );
+    });
+
+  const removeOneServer = useLocalStorageMutation<string, Server>(client, 
+    LOCAL_STORAGE_SERVERS_KEY, 
+    (serverId: string) => (actual: Server[]) => {
+      return actual.filter(({ id }: Server) => id !== serverId);
+    });
+
+  return { servers, getOneServer, pushOneServer, updateOneServer, removeOneServer } as const;
 }
 
 export function useServer(serverId: string) {
   const { servers } = useServers();
   return servers.data?.find((s) => s.id === serverId);
+}
+
+function useLocalStorageMutation<Arg, T>(client: QueryClient, key: string, mutationFn: (arg: Arg) => (actual: T[]) => T[]) {
+  return useMutation({
+    mutationFn: (arg: Arg) =>
+      new Promise((resolve, reject) => {
+        const serversInLocalStorage = localStorage.getItem(key);
+        try {
+          if (isDefinedAndNotEmpty(serversInLocalStorage)) {
+            const newState = JSON.stringify(mutationFn(arg)(JSON.parse(serversInLocalStorage)));
+            localStorage.setItem(key, newState);
+          } else {
+            const newState = JSON.stringify(mutationFn(arg)([]));
+            localStorage.setItem(key, newState);
+          }
+          resolve(null);
+          client.invalidateQueries({ queryKey: buildQueryKey() });
+        } catch {
+          reject(null);
+        }
+      }),
+  })
 }

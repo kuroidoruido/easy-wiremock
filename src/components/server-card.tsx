@@ -5,10 +5,11 @@ import './server-card.css';
 
 interface ServerCardProps {
     server: Server;
+    onEdit(serverId: string): void;
     onRemove(serverId: string): void;
 }
 
-export function ServerCard({ server, onRemove }: ServerCardProps) {
+export function ServerCard({ server, onEdit, onRemove }: ServerCardProps) {
     const onActionClick = (e: React.MouseEvent) => {
         e.stopPropagation();
     }
@@ -22,7 +23,7 @@ export function ServerCard({ server, onRemove }: ServerCardProps) {
             <button className="btn-dropdown" onClick={onActionClick}>
                 ⠇
                 <ul className="btn-dropdown-menu">
-                    <li role="button" style={{ fontStyle: 'italic' }}>Edit (soon)</li>
+                    <li role="button" onClick={() => onEdit(server.id)}>Edit</li>
                     <li role="button" onClick={() => onRemove(server.id)}>Remove</li>
                 </ul>
             </button>
