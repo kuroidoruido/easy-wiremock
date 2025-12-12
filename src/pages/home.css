@@ -4,13 +4,27 @@
   align-items: center;
 
   .server-list {
-    .server-list-container {
-      display: flex;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.5rem;
+    .tag-group {
+      border: 1px solid currentColor;
+      border-radius: 0.5rem;
+      margin-bottom: 0;
+      summary {
+        padding: 1rem;
+      }
+      .server-list-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0 1rem 1rem 1rem;
+      }
     }
   }
 }

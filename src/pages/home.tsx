@@ -17,22 +17,27 @@ export function Home() {
 }
 
 function ServerList() {
-  const { servers, removeOneServer } = useServers();
+  const { serversByTag, removeOneServer } = useServers();
   const [editingServer, setEditingServer] = useState<string|null>(null);
   const isEditing = isDefinedAndNotEmpty(editingServer);
   return (
     <>
       <section className="server-list">
         <h2>Choose your server</h2>
-        <div className="server-list-container">
-          {servers.data?.map((server) => 
-            <ServerCard
-            key={server.id}
-            server={server}
-            onEdit={setEditingServer}
-            onRemove={(id) => removeOneServer.mutate(id)}
-          />)}
-        </div>
+        {serversByTag.map((group) =>
+          <details className="tag-group" key={group.label} open>
+            <summary>{group.label}</summary>
+            <div className="server-list-container">
+              {group.servers.map((server) => 
+                <ServerCard
+                key={server.id}
+                server={server}
+                onEdit={setEditingServer}
+                onRemove={(id) => removeOneServer.mutate(id)}
+              />)}
+            </div>
+          </details>
+        )}
       </section>
       {isEditing && <EditServerModal serverId={editingServer} onClose={() => setEditingServer(null)} />}
     </>

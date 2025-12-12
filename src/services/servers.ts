@@ -28,6 +28,12 @@ export function useServers() {
       }),
   });
 
+
+  const serversByTag = (servers.data ?? [])
+    .flatMap(serverAsTagToServer)
+    .reduce(groupByTags, [])
+    .toSorted(sortGroupByLabel({ ensureLast: ['all'] }));
+
   function getOneServer(serverId: string): Server | undefined {
     return servers.data?.find(s => s.id === serverId) ?? undefined;
   }
@@ -56,7 +62,7 @@ export function useServers() {
       return actual.filter(({ id }: Server) => id !== serverId);
     });
 
-  return { servers, getOneServer, pushOneServer, updateOneServer, removeOneServer } as const;
+  return { servers, serversByTag, getOneServer, pushOneServer, updateOneServer, removeOneServer } as const;
 }
 
 export function useServer(serverId: string) {
