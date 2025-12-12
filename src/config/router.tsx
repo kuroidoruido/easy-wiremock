@@ -5,9 +5,11 @@ import { WiremockMappings } from "../pages/wiremock/mappings";
 import { WiremockRequests } from "../pages/wiremock/requests";
 import { NotFound } from "../pages/not-found";
 import { WiremockServer } from "../pages/wiremock/root";
+import { Changelogs } from "../pages/changelogs";
 
 export const Router = createRouter({
   Home: "/",
+  Changelogs: "/changelogs",
   Wiremock: "/wiremock/:serverId",
   ...createGroup("Wiremock", "wiremock/:serverId", {
     Mappings: "/mappings",
@@ -24,6 +26,7 @@ export function AppRouting() {
     <main data-route={route?.name}>
       {match(route)
         .with({ name: "Home" }, () => <Home />)
+        .with({ name: "Changelogs" }, () => <Changelogs />)
         .with({ name: "Wiremock" }, ({ params }) => (
           <WiremockServer {...params} />
         ))
@@ -43,6 +46,7 @@ export function AppRouting() {
 export function useRoute() {
   return Router.useRoute([
     "Home",
+    "Changelogs",
     "Wiremock",
     "WiremockMappings",
     "WiremockRequests",

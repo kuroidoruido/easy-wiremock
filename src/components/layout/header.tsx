@@ -4,6 +4,7 @@ import { useServer } from "../../services/servers";
 import { Link } from "@swan-io/chicane";
 
 import "./header.css";
+import { useChangelogs } from "../../services/changelogs";
 
 export function AppHeader() {
   const route = useRoute();
@@ -45,6 +46,7 @@ function ServerSelectedHeader() {
 }
 
 function NoServerSelectedHeader() {
+  const { newVersionReleasedFromLastVisit } = useChangelogs();
   return (
     <header>
       <nav>
@@ -54,6 +56,10 @@ function NoServerSelectedHeader() {
               <strong>Easy Wiremock</strong>
             </Link>
           </li>
+        </ul>
+        <ul>
+          {newVersionReleasedFromLastVisit && 
+            <li><Link to={Router.Changelogs()}>✨ Check news from last visit</Link></li>}
         </ul>
       </nav>
     </header>
