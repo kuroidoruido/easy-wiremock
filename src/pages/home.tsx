@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ServerCard } from "../components/server-card";
-import { Server, useServers } from "../services/servers";
+import { Server, useServer, useServers } from "../services/servers";
 import { useSubmitCallback } from "../utils/form";
 
 import "./home.css";
@@ -62,11 +62,13 @@ interface EditServerModalProps {
   onClose(): void;
 }
 
+type ServerForm = Omit<Server, 'tags'> & { tags: string };
+
 export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
-  const { getOneServer, updateOneServer } = useServers();
-  const server = getOneServer(serverId)!;
-  const onSubmit = useSubmitCallback<Server>((formState) => {
-    updateOneServer.mutate(formState);
+  const { updateOneServer } = useServers();
+  const server = useServer(serverId)!;
+  const onSubmit = useSubmitCallback<ServerForm>((formState) => {
+    updateOneServer.mutate({ ...formState, tags: formState.tags.split(',').map(t => t.trim()) });
     onClose();
   });
   return <dialog open>
@@ -81,6 +83,7 @@ export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
             <input type="hidden" name="id" defaultValue={server.id} />
             <input type="text" name="url" placeholder="http://localhost:8080" defaultValue={server.url} />
             <input type="text" name="label" placeholder="My wiremock instance" defaultValue={server.label} />
+            <input type="text" name="tags" placeholder="First tag, second tag" defaultValue={server.tags.join(', ')} />
             <button>Update server</button>
           </form>
         </article>

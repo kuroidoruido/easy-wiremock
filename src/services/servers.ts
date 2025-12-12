@@ -1,11 +1,9 @@
 import { isDefinedAndNotEmpty } from "@anthonypena/fp";
-import { QueryClient, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { groupByTags, parseServers, serializeServers, Server, serverAsTagToServer, sortGroupByLabel, sortServerByLabel } from "../model/server.model";
+import { useLocalStorageCollectionMutation } from "../utils/query.utils";
 
-export interface Server {
-  id: string;
-  label: string;
-  url: string;
-}
+export type { Server } from '../model/server.model'
 
 const LOCAL_STORAGE_SERVERS_KEY = "servers";
 
@@ -23,7 +21,7 @@ export function useServers() {
           LOCAL_STORAGE_SERVERS_KEY
         );
         if (isDefinedAndNotEmpty(serversInLocalStorage)) {
-          resolve(JSON.parse(serversInLocalStorage) satisfies Server[]);
+          resolve(parseServers(serversInLocalStorage) satisfies Server[]);
         } else {
           resolve([] satisfies Server[]);
         }
@@ -34,21 +32,26 @@ export function useServers() {
     return servers.data?.find(s => s.id === serverId) ?? undefined;
   }
 
-  const pushOneServer = useLocalStorageMutation<Server, Server>(client, 
-    LOCAL_STORAGE_SERVERS_KEY, 
+  const useServersMutation = useLocalStorageCollectionMutation<Server>({
+    client, 
+    key: LOCAL_STORAGE_SERVERS_KEY, 
+    parseFn: parseServers,
+    serializeFn: serializeServers,
+    buildQueryKey
+  });
+
+  const pushOneServer = useServersMutation(
     (newServer: Server) => (actual: Server[]) => {
       newServer.id = crypto.randomUUID();
-      return [...actual, newServer];
+      return [...actual, newServer].toSorted(sortServerByLabel());
     });
 
-  const updateOneServer = useLocalStorageMutation<Server, Server>(client, 
-    LOCAL_STORAGE_SERVERS_KEY, 
+  const updateOneServer = useServersMutation(
     (newServer: Server) => (actual: Server[]) => {
       return actual.map((server: Server) => server.id === newServer.id ? newServer : server );
     });
 
-  const removeOneServer = useLocalStorageMutation<string, Server>(client, 
-    LOCAL_STORAGE_SERVERS_KEY, 
+  const removeOneServer = useServersMutation(
     (serverId: string) => (actual: Server[]) => {
       return actual.filter(({ id }: Server) => id !== serverId);
     });
@@ -57,28 +60,6 @@ export function useServers() {
 }
 
 export function useServer(serverId: string) {
-  const { servers } = useServers();
-  return servers.data?.find((s) => s.id === serverId);
+  return useServers().getOneServer(serverId);
 }
 
-function useLocalStorageMutation<Arg, T>(client: QueryClient, key: string, mutationFn: (arg: Arg) => (actual: T[]) => T[]) {
-  return useMutation({
-    mutationFn: (arg: Arg) =>
-      new Promise((resolve, reject) => {
-        const serversInLocalStorage = localStorage.getItem(key);
-        try {
-          if (isDefinedAndNotEmpty(serversInLocalStorage)) {
-            const newState = JSON.stringify(mutationFn(arg)(JSON.parse(serversInLocalStorage)));
-            localStorage.setItem(key, newState);
-          } else {
-            const newState = JSON.stringify(mutationFn(arg)([]));
-            localStorage.setItem(key, newState);
-          }
-          resolve(null);
-          client.invalidateQueries({ queryKey: buildQueryKey() });
-        } catch {
-          reject(null);
-        }
-      }),
-  })
-}

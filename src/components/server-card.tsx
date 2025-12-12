@@ -2,6 +2,7 @@ import { Router } from "../config/router";
 import { Server } from "../services/servers";
 
 import './server-card.css';
+import { renderTag, TagContainer } from "./tag";
 
 interface ServerCardProps {
     server: Server;
@@ -18,9 +19,10 @@ export function ServerCard({ server, onEdit, onRemove }: ServerCardProps) {
         <main>
             <h3>{server.label}</h3>
             <p>{server.url}</p>
+            <TagContainer>{server.tags.map(renderTag)}</TagContainer>
         </main>
         <footer>
-            <button className="btn-dropdown" onClick={onActionClick}>
+            <button className="btn-dropdown secondary" onClick={onActionClick}>
                 ⠇
                 <ul className="btn-dropdown-menu">
                     <li role="button" onClick={() => onEdit(server.id)}>Edit</li>
