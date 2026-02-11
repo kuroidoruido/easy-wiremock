@@ -10,7 +10,7 @@
     "lint": "prettier . && eslint .",
     "lint:fix": "prettier --write . && eslint --fix .",
     "preview": "vite preview",
-    "wiremock": "wiremock --port 10888",
+    "wiremock": "wiremock --enable-stub-cors --port 10888",
     "wiremock:generate-requests-set": "tsx scripts/generate-request-set.ts"
   },
   "dependencies": {

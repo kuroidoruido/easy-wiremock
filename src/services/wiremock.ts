@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServer } from "./servers";
+import { removeTrailingSlash } from "../utils/query.utils.ts";
 
 function buildAdminReq(baseUrl: string | undefined, adminPath: string) {
-  return `${baseUrl}/__admin/${adminPath}`;
+  return `${removeTrailingSlash(baseUrl)}/__admin/${adminPath}`;
 }
 function deleteAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
   return fetch(buildAdminReq(baseUrl, adminPath), { method: "DELETE" }).then((res): Promise<T> => res.json());

@@ -39,3 +39,11 @@ export function useLocalStorageCollectionMutation<T>({
     });
   };
 }
+
+export function removeTrailingSlash(url: string | undefined): string | undefined {
+  if (url?.endsWith("/")) {
+    return url.slice(0, -1);
+  } else {
+    return url;
+  }
+}
