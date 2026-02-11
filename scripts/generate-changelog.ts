@@ -1,3 +1,4 @@
+import { format, parseISO } from "date-fns";
 import { DefaultLogFields, simpleGit } from "simple-git";
 import fs from "node:fs";
 
@@ -29,9 +30,16 @@ function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
   const tagSections = Object.entries(logs)
     .toSorted(([a], [b]) => b.localeCompare(a))
     .map(([tag, logs]): string =>
-      [`## ${tag}`, "", ...logs.filter((l) => !l.message.includes("release ")).map((l) => `- ${l.message}`), ""].join(
-        "\n",
-      ),
+      [
+        `## ${tag} (${formatTagDate(logs[logs.length - 1].date)})`,
+        "",
+        ...logs.filter((l) => !l.message.includes("release ")).map((l) => `- ${l.message}`),
+        "",
+      ].join("\n"),
     );
   return ["# CHANGELOG", "", ...tagSections].join("\n");
+}
+
+function formatTagDate(date: string): string {
+  return format(parseISO(date), "yyyy-MM-dd");
 }

@@ -68,6 +68,7 @@ interface Changelog {
 
 interface ChangelogVersion {
   version: string;
+  versionDate: string;
   changes: VersionChange[];
   seen: boolean;
 }
@@ -86,7 +87,8 @@ function parseChangelogMd(md: string): Changelog {
       if (currentVersion !== undefined) {
         versions.push(currentVersion);
       }
-      currentVersion = { version: row.slice(2).trim().slice(1), changes: [], seen: false };
+      const [, version, versionDate] = /## v(.*) \((\d{4}-\d{2}-\d{2})\)/.exec(row)!;
+      currentVersion = { version, versionDate, changes: [], seen: false };
     } else if (row.startsWith("- ")) {
       currentVersion?.changes.push({ message: row.slice(2) });
     }
