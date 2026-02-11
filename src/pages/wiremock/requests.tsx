@@ -13,15 +13,16 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
     <>
       <div className="page-heading-row">
         <h2>Requests ({requests.data?.meta.total})</h2>
-        <button type="button" className="danger" onClick={() => deleteAllRequests.mutate()}>🗑️ Delete all requests</button>
+        <button type="button" className="danger" onClick={() => deleteAllRequests.mutate()}>
+          🗑️ Delete all requests
+        </button>
       </div>
       <section className="requests">
         {requests.data?.requests.map((request) => (
           <details className="request-entry" key={request.id}>
             <summary>
               <span>
-                <MethodTag method={request.request.method} />{" "}
-                {request.request.url ?? request.request.absoluteUrl}
+                <MethodTag method={request.request.method} /> {request.request.url ?? request.request.absoluteUrl}
               </span>
               <span>
                 {request.wasMatched ? "✅ " : ""}
@@ -34,9 +35,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
                 json={{
                   id: request.id,
                   wasMatched: request.wasMatched,
-                  ...(request.wasMatched
-                    ? { stubMappingId: request.stubMapping?.id }
-                    : []),
+                  ...(request.wasMatched ? { stubMappingId: request.stubMapping?.id } : []),
                 }}
               />
             </section>

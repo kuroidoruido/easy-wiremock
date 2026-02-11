@@ -11,7 +11,5 @@ export const queryClient = new QueryClient({
 });
 
 export function TanstackQueryProvider({ children }: React.PropsWithChildren) {
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }

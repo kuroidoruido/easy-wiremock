@@ -11,7 +11,7 @@ export function AppHeader() {
   return match(route)
     .when(
       (r) => r?.name.startsWith("Wiremock"),
-      () => <ServerSelectedHeader />
+      () => <ServerSelectedHeader />,
     )
     .otherwise(() => <NoServerSelectedHeader />);
 }
@@ -58,8 +58,11 @@ function NoServerSelectedHeader() {
           </li>
         </ul>
         <ul>
-          {newVersionReleasedFromLastVisit && 
-            <li><Link to={Router.Changelogs()}>✨ Check news from last visit</Link></li>}
+          {newVersionReleasedFromLastVisit && (
+            <li>
+              <Link to={Router.Changelogs()}>✨ Check news from last visit</Link>
+            </li>
+          )}
         </ul>
       </nav>
     </header>

@@ -13,21 +13,23 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
     <>
       <div className="page-heading-row">
         <h2>Mappings ({mappings.data?.meta.total})</h2>
-        <button type="button" className="danger" onClick={() => deleteAllMappings.mutate()}>🗑️ Delete all mappings</button>
+        <button type="button" className="danger" onClick={() => deleteAllMappings.mutate()}>
+          🗑️ Delete all mappings
+        </button>
       </div>
       <section className="mappings">
         {mappings.data?.mappings.map((mapping) => (
           <details className="mapping-entry" key={mapping.id}>
             <summary>
               <MethodTag method={mapping.request.method} />{" "}
-              {mapping.request.urlPathPattern ?? mapping.request.urlPattern ?? mapping.request.urlPath ?? mapping.request.url}
+              {mapping.request.urlPathPattern ??
+                mapping.request.urlPattern ??
+                mapping.request.urlPath ??
+                mapping.request.url}
             </summary>
             <section>
               <h3>Quick actions</h3>
-              <button
-                className="danger"
-                onClick={() => deleteOneMapping.mutate(mapping.id)}
-              >
+              <button className="danger" onClick={() => deleteOneMapping.mutate(mapping.id)}>
                 🗑️ Delete
               </button>
             </section>

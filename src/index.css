@@ -56,7 +56,6 @@ button {
   }
 }
 
-
 .page-heading-row {
   display: flex;
   justify-content: space-between;
@@ -64,40 +63,40 @@ button {
 }
 
 .btn-dropdown {
-    position: relative;
-    ul.btn-dropdown-menu {
-        position: absolute;
-        margin: 0;
-        padding: 0;
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        background-color: var(--pico-dropdown-background-color);
-        border: var(--pico-border-width) solid var(--pico-dropdown-border-color);
-        border-radius: var(--pico-border-radius);
-        & > li {
-            display: grid;
-            grid-template-columns: auto;
-            list-style-type: none;
-            padding: calc(var(--pico-form-element-spacing-vertical) * .5) var(--pico-form-element-spacing-horizontal);
-            width: 100%;
-            margin: 0;
-            white-space: nowrap;
-            background: transparent;
-            border: none;
-            color: var(--pico-dropdown-color);
-            &:first-of-type {
-                margin-top: calc(var(--pico-form-element-spacing-vertical) * .5);
-            }
-            &:hover {
-              background-color: var(--pico-dropdown-hover-background-color);
-            }
-        }
+  position: relative;
+  ul.btn-dropdown-menu {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    background-color: var(--pico-dropdown-background-color);
+    border: var(--pico-border-width) solid var(--pico-dropdown-border-color);
+    border-radius: var(--pico-border-radius);
+    & > li {
+      display: grid;
+      grid-template-columns: auto;
+      list-style-type: none;
+      padding: calc(var(--pico-form-element-spacing-vertical) * 0.5) var(--pico-form-element-spacing-horizontal);
+      width: 100%;
+      margin: 0;
+      white-space: nowrap;
+      background: transparent;
+      border: none;
+      color: var(--pico-dropdown-color);
+      &:first-of-type {
+        margin-top: calc(var(--pico-form-element-spacing-vertical) * 0.5);
+      }
+      &:hover {
+        background-color: var(--pico-dropdown-hover-background-color);
+      }
     }
+  }
 
-    &:focus {
-        .btn-dropdown-menu {
-            display: flex;
-        }
+  &:focus {
+    .btn-dropdown-menu {
+      display: flex;
     }
+  }
 }

@@ -34,8 +34,8 @@ function makeRequest(method: string, path: string, body?: string) {
                 crypto
                   .randomUUID()
                   .split("-")
-                  .map((k) => [k, randomOne(VALUE_SAMPLES)])
-              )
+                  .map((k) => [k, randomOne(VALUE_SAMPLES)]),
+              ),
             );
       await makeRequest(method, "/rand/" + crypto.randomUUID(), body);
     } else {

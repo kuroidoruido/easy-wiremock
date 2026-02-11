@@ -1,11 +1,11 @@
 .tag-container {
-    display: flex;
-    gap: 0.25rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
 .tag {
-    padding: 0.125rem 0.5rem;
-    border-radius: 1rem;
-    background-color: var(--pico-secondary-background);
+  padding: 0.125rem 0.5rem;
+  border-radius: 1rem;
+  background-color: var(--pico-secondary-background);
 }

@@ -34,6 +34,9 @@ jobs:
       - name: Install step
         run: "npm ci"
 
+      - name: Lint step
+        run: "npm run lint"
+
       - name: Build step
         run: "npm run build"
 
@@ -43,5 +46,3 @@ jobs:
           project: "anthonypena-easy-wiremock"
           entrypoint: "./deno-deploy-router.ts"
           root: "."
-          
-          

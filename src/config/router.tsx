@@ -27,15 +27,9 @@ export function AppRouting() {
       {match(route)
         .with({ name: "Home" }, () => <Home />)
         .with({ name: "Changelogs" }, () => <Changelogs />)
-        .with({ name: "Wiremock" }, ({ params }) => (
-          <WiremockServer {...params} />
-        ))
-        .with({ name: "WiremockMappings" }, ({ params }) => (
-          <WiremockMappings {...params} />
-        ))
-        .with({ name: "WiremockRequests" }, ({ params }) => (
-          <WiremockRequests {...params} />
-        ))
+        .with({ name: "Wiremock" }, ({ params }) => <WiremockServer {...params} />)
+        .with({ name: "WiremockMappings" }, ({ params }) => <WiremockMappings {...params} />)
+        .with({ name: "WiremockRequests" }, ({ params }) => <WiremockRequests {...params} />)
         .otherwise(() => (
           <NotFound />
         ))}
@@ -44,13 +38,7 @@ export function AppRouting() {
 }
 
 export function useRoute() {
-  return Router.useRoute([
-    "Home",
-    "Changelogs",
-    "Wiremock",
-    "WiremockMappings",
-    "WiremockRequests",
-  ]);
+  return Router.useRoute(["Home", "Changelogs", "Wiremock", "WiremockMappings", "WiremockRequests"]);
 }
 
 export function useServerRoute() {

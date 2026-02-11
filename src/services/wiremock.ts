@@ -5,14 +5,10 @@ function buildAdminReq(baseUrl: string | undefined, adminPath: string) {
   return `${baseUrl}/__admin/${adminPath}`;
 }
 function deleteAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
-  return fetch(buildAdminReq(baseUrl, adminPath), { method: "DELETE" }).then(
-    (res): Promise<T> => res.json(),
-  );
+  return fetch(buildAdminReq(baseUrl, adminPath), { method: "DELETE" }).then((res): Promise<T> => res.json());
 }
 function getAdminReq<T>(baseUrl: string | undefined, adminPath: string) {
-  return fetch(buildAdminReq(baseUrl, adminPath)).then(
-    (res): Promise<T> => res.json(),
-  );
+  return fetch(buildAdminReq(baseUrl, adminPath)).then((res): Promise<T> => res.json());
 }
 
 export interface ServerHealth {
@@ -38,15 +34,7 @@ export interface Mappings {
   mappings: Mapping[];
 }
 
-export type Method =
-  | "ANY"
-  | "DELETE"
-  | "GET"
-  | "HEAD"
-  | "OPTIONS"
-  | "PATCH"
-  | "POST"
-  | "PUT";
+export type Method = "ANY" | "DELETE" | "GET" | "HEAD" | "OPTIONS" | "PATCH" | "POST" | "PUT";
 type BodyPattern = unknown;
 
 export interface Mapping {
@@ -93,7 +81,7 @@ export function useWiremockMappings(serverId: string) {
 
   const deleteAllMappings = useMutation({
     mutationFn: () =>
-      deleteAdminReq(server?.url, 'mappings').then(() => {
+      deleteAdminReq(server?.url, "mappings").then(() => {
         client.invalidateQueries({
           queryKey: [server?.url, "admin", "mappings"],
         });
@@ -169,7 +157,7 @@ export function useWiremockRequests(serverId: string) {
 
   const deleteAllRequests = useMutation({
     mutationFn: () =>
-      deleteAdminReq(server?.url, 'requests').then(() => {
+      deleteAdminReq(server?.url, "requests").then(() => {
         client.invalidateQueries({
           queryKey: [server?.url, "admin", "requests"],
         });

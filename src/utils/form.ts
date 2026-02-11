@@ -1,5 +1,5 @@
 export function useSubmitCallback<T = unknown>(
-  cb: (formState: T, formElement: HTMLFormElement) => void
+  cb: (formState: T, formElement: HTMLFormElement) => void,
 ): React.FormEventHandler<HTMLFormElement> {
   return (event) => {
     event.preventDefault();

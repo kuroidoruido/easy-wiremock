@@ -13,7 +13,7 @@ export function useAppInfos() {
         (packageJson): AppInfos => ({
           name: packageJson.name,
           version: packageJson.version,
-        })
+        }),
       ),
   });
 }

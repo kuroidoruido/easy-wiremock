@@ -9,9 +9,15 @@ interface UseLocalStorageMutationOptions<T> {
   buildQueryKey: () => string[];
 }
 
-
-export function useLocalStorageCollectionMutation<T>({ client, key, parseFn, serializeFn, buildQueryKey }: UseLocalStorageMutationOptions<T>) {
+export function useLocalStorageCollectionMutation<T>({
+  client,
+  key,
+  parseFn,
+  serializeFn,
+  buildQueryKey,
+}: UseLocalStorageMutationOptions<T>) {
   return <Arg>(mutationFn: (arg: Arg) => (actual: T[]) => T[]) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     return useMutation({
       mutationFn: (arg: Arg) =>
         new Promise((resolve, reject) => {
@@ -30,6 +36,6 @@ export function useLocalStorageCollectionMutation<T>({ client, key, parseFn, ser
             reject(null);
           }
         }),
-      })
-    }
+    });
+  };
 }

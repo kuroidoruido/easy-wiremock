@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build && npm run build:changelog",
     "build:changelog": "tsx scripts/generate-changelog.ts",
-    "lint": "eslint .",
+    "lint": "prettier . && eslint .",
+    "lint:fix": "prettier --write . && eslint --fix .",
     "preview": "vite preview",
     "wiremock": "wiremock --port 10888",
     "wiremock:generate-requests-set": "tsx scripts/generate-request-set.ts"
@@ -32,6 +33,7 @@
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.16",
     "globals": "^15.14.0",
+    "prettier": "^3.8.1",
     "simple-git": "^3.30.0",
     "tsx": "^4.19.2",
     "typescript": "~5.6.2",
