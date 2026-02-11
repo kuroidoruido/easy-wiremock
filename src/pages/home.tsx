@@ -44,10 +44,12 @@ function ServerList() {
   );
 }
 
+type ServerForm = Omit<Server, 'tags'> & { tags: string };
+
 export function AddNewServer() {
   const { pushOneServer } = useServers();
-  const onSubmit = useSubmitCallback<Server>((formState) => {
-    pushOneServer.mutate(formState);
+  const onSubmit = useSubmitCallback<ServerForm>((formState) => {
+    pushOneServer.mutate({ ...formState, tags: formState.tags.split(',').map(t => t.trim()) });
   });
 
   return (
@@ -56,6 +58,7 @@ export function AddNewServer() {
       <form onSubmit={onSubmit}>
         <input type="text" name="url" placeholder="http://localhost:8080" />
         <input type="text" name="label" placeholder="My wiremock instance" />
+          <input type="text" name="tags" placeholder="First tag, second tag" defaultValue="" />
         <button type="submit">Add a server</button>
       </form>
     </article>
@@ -66,8 +69,6 @@ interface EditServerModalProps {
   serverId: string;
   onClose(): void;
 }
-
-type ServerForm = Omit<Server, 'tags'> & { tags: string };
 
 export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
   const { updateOneServer } = useServers();
