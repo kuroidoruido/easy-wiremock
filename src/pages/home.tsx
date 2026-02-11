@@ -48,8 +48,12 @@ type ServerForm = Omit<Server, 'tags'> & { tags: string };
 
 export function AddNewServer() {
   const { pushOneServer } = useServers();
-  const onSubmit = useSubmitCallback<ServerForm>((formState) => {
-    pushOneServer.mutate({ ...formState, tags: formState.tags.split(',').map(t => t.trim()) });
+  const onSubmit = useSubmitCallback<ServerForm>((formState, form) => {
+    pushOneServer.mutate({ ...formState, tags: formState.tags.split(',').map(t => t.trim()) }, {
+      onSuccess() {
+        form.reset();
+      }
+    });
   });
 
   return (
