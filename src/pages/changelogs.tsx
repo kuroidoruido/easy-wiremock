@@ -7,7 +7,7 @@ export function Changelogs() {
         <>
             <h1>Changelogs</h1>
             <section className="container" style={{ textAlign: 'right', marginBottom: '3rem' }}>
-                <button onClick={markLastVersionAsSeen}>🗸 Mark as seen</button>
+                <button type="button" onClick={markLastVersionAsSeen}>🗸 Mark as seen</button>
             </section>
             <section className="container">
                 {changelog?.versions.map(version =>

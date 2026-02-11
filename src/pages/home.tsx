@@ -56,7 +56,7 @@ export function AddNewServer() {
       <form onSubmit={onSubmit}>
         <input type="text" name="url" placeholder="http://localhost:8080" />
         <input type="text" name="label" placeholder="My wiremock instance" />
-        <button>Add a server</button>
+        <button type="submit">Add a server</button>
       </form>
     </article>
   );
@@ -79,7 +79,7 @@ export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
   return <dialog open>
         <article>
           <header>
-            <button aria-label="Close" rel="prev" onClick={onClose}></button>
+            <button type="button" aria-label="Close" rel="prev" onClick={onClose}></button>
             <p>
               <strong>✏️ Edit {server.label}</strong>
             </p>
@@ -89,7 +89,7 @@ export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
             <input type="text" name="url" placeholder="http://localhost:8080" defaultValue={server.url} />
             <input type="text" name="label" placeholder="My wiremock instance" defaultValue={server.label} />
             <input type="text" name="tags" placeholder="First tag, second tag" defaultValue={server.tags.join(', ')} />
-            <button>Update server</button>
+            <button type="submit">Update server</button>
           </form>
         </article>
     </dialog>

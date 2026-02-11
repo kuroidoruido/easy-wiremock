@@ -13,7 +13,7 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
     <>
       <div className="page-heading-row">
         <h2>Mappings ({mappings.data?.meta.total})</h2>
-        <button className="danger" onClick={() => deleteAllMappings.mutate()}>🗑️ Delete all mappings</button>
+        <button type="button" className="danger" onClick={() => deleteAllMappings.mutate()}>🗑️ Delete all mappings</button>
       </div>
       <section className="mappings">
         {mappings.data?.mappings.map((mapping) => (

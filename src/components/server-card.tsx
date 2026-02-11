@@ -22,7 +22,7 @@ export function ServerCard({ server, onEdit, onRemove }: ServerCardProps) {
             <TagContainer>{server.tags.map(renderTag)}</TagContainer>
         </main>
         <footer>
-            <button className="btn-dropdown secondary" onClick={onActionClick}>
+            <button type="button" className="btn-dropdown secondary" onClick={onActionClick}>
                 ⠇
                 <ul className="btn-dropdown-menu">
                     <li role="button" onClick={() => onEdit(server.id)}>Edit</li>

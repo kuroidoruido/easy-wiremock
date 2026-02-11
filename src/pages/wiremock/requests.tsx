@@ -13,7 +13,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
     <>
       <div className="page-heading-row">
         <h2>Requests ({requests.data?.meta.total})</h2>
-        <button className="danger" onClick={() => deleteAllRequests.mutate()}>🗑️ Delete all requests</button>
+        <button type="button" className="danger" onClick={() => deleteAllRequests.mutate()}>🗑️ Delete all requests</button>
       </div>
       <section className="requests">
         {requests.data?.requests.map((request) => (
