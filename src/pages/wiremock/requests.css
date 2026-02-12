@@ -4,6 +4,15 @@
     padding: 0.75rem 0.5rem;
   }
 
+  section.filters {
+    display: flex;
+    justify-content: space-between;
+
+    select {
+      width: fit-content;
+    }
+  }
+
   section.requests {
     display: flex;
     flex-direction: column;

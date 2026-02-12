@@ -130,7 +130,7 @@ export interface WRequest {
     transformerParameters: unknown;
   };
   response: {
-    status: 200;
+    status: number;
     headers: Record<string, string>;
     bodyAsBase64: string;
     body: string;
