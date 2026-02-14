@@ -4,6 +4,7 @@ import { ObjectAsTable } from "../../components/object-as-table";
 import { RawJson } from "../../components/raw-json";
 import { useWiremockRequests } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
+import { getStatusEmoji } from "../../utils/status-emoji";
 
 import "./requests.css";
 import { useState } from "react";
@@ -70,8 +71,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
                 <MethodTag method={request.request.method} /> {request.request.url ?? request.request.absoluteUrl}
               </span>
               <span>
-                {request.wasMatched ? "✅ " : ""}
-                {request.response.status}
+                {getStatusEmoji(request.response.status)} {request.response.status}
               </span>
             </summary>
             <section>
