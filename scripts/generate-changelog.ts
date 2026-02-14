@@ -33,7 +33,7 @@ function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
       [
         `## ${tag} (${formatTagDate(logs[logs.length - 1].date)})`,
         "",
-        ...logs.filter((l) => !l.message.includes("release ")).map((l) => `- ${l.message}`),
+        ...logs.filter((l) => !l.message.includes("release ")).map((l) => `- ${l.message}${addAuthorNotCreator(l)}`),
         "",
       ].join("\n"),
     );
@@ -42,4 +42,11 @@ function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
 
 function formatTagDate(date: string): string {
   return format(parseISO(date), "yyyy-MM-dd");
+}
+
+function addAuthorNotCreator(log: DefaultLogFields): string {
+  if (log.author_email === "anthony.pena@outlook.fr") {
+    return "";
+  }
+  return ` @${log.author_name}`;
 }
