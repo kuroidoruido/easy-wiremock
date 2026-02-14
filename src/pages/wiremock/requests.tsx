@@ -70,8 +70,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
                 <MethodTag method={request.request.method} /> {request.request.url ?? request.request.absoluteUrl}
               </span>
               <span>
-                {request.wasMatched ? "✅ " : ""}
-                {request.response.status}
+                {request.response.statusEmoji} {request.response.status}
               </span>
             </summary>
             <section>
