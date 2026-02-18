@@ -2,7 +2,6 @@ name: Deploy
 on:
   push:
     branches: main
-    tags: ["v*"]
   pull_request:
     branches: main
 
@@ -42,7 +41,6 @@ jobs:
         run: "npm run build"
 
       - name: Upload to Deno Deploy
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: denoland/deployctl@v1
         with:
           project: "anthonypena-easy-wiremock"
