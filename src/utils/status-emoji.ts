@@ -74,8 +74,5 @@ const STATUS_EMOJI_MAP: Record<number, string> = {
 };
 
 export function getStatusEmoji(status: number): string {
-  if (status in STATUS_EMOJI_MAP) {
-    return STATUS_EMOJI_MAP[status];
-  }
-  return "❓";
+  return STATUS_EMOJI_MAP[status] ?? "❓";
 }
