@@ -28,7 +28,7 @@ function buildLogsByTag(logs: readonly DefaultLogFields[]): Record<string, Defau
 
 function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
   const tagSections = Object.entries(logs)
-    .toSorted(([a], [b]) => b.localeCompare(a))
+    .toSorted(([a], [b]) => -semVerSort(a, b))
     .map(([tag, logs]): string =>
       [
         `## ${tag} (${formatTagDate(logs[logs.length - 1].date)})`,
@@ -49,4 +49,19 @@ function addAuthorNotCreator(log: DefaultLogFields): string {
     return "";
   }
   return ` @${log.author_name}`;
+}
+
+function semVerSort(a: string, b: string): number {
+  const [aMajor, aMinor, aPatch] = (a ?? '').split('.');
+  const [bMajor, bMinor, bPatch] = (b ?? '').split('.');
+  if (aMajor !== bMajor) {
+    return Number.parseInt(aMajor, 10) - Number.parseInt(bMajor, 10)
+  }
+  if (aMinor !== bMinor) {
+    return Number.parseInt(aMinor, 10) - Number.parseInt(bMinor, 10)
+  }
+  if (aPatch !== bPatch) {
+    return Number.parseInt(aPatch, 10) - Number.parseInt(bPatch, 10)
+  }
+  return a.localeCompare(b);
 }
