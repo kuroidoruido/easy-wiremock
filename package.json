@@ -11,7 +11,8 @@
     "lint:fix": "prettier --write . && eslint --fix .",
     "preview": "vite preview",
     "wiremock": "wiremock --enable-stub-cors --port 10888",
-    "wiremock:generate-requests-set": "tsx scripts/generate-request-set.ts"
+    "wiremock:generate-requests-set": "tsx scripts/generate-request-set.ts",
+    "push-release": "sh ./scripts/release.sh"
   },
   "dependencies": {
     "@anthonypena/fp": "^1.0.1",
