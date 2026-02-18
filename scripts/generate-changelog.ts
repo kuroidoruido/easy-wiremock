@@ -33,7 +33,7 @@ function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
       [
         `## ${tag} (${formatTagDate(logs[logs.length - 1].date)})`,
         "",
-        ...logs.filter((l) => !l.message.includes("release ")).map((l) => `- ${l.message}${addAuthorNotCreator(l)}`),
+        ...logs.filter((l) => l.message.match(/^release \d+\.\d+\.\d+$/) == null).map((l) => `- ${l.message}${addAuthorNotCreator(l)}`),
         "",
       ].join("\n"),
     );
