@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServer } from "./servers";
 import { removeTrailingSlash } from "../utils/query.utils.ts";
+import { getStatusEmoji } from "../utils/status-emoji";
 
 function buildAdminReq(baseUrl: string | undefined, adminPath: string) {
   return `${removeTrailingSlash(baseUrl)}/__admin/${adminPath}`;
@@ -131,6 +132,7 @@ export interface WRequest {
   };
   response: {
     status: number;
+    statusEmoji: string;
     headers: Record<string, string>;
     bodyAsBase64: string;
     body: string;
@@ -153,7 +155,13 @@ export function useWiremockRequests(serverId: string) {
 
   const requests = useQuery({
     queryKey: [server?.url, "admin", "requests"],
-    queryFn: () => getAdminReq<Requests>(server?.url, "requests"),
+    queryFn: () =>
+      getAdminReq<Requests>(server?.url, "requests").then((res) => {
+        res.requests.forEach((req) => {
+          req.response.statusEmoji = getStatusEmoji(req.response.status);
+        });
+        return res;
+      }),
   });
 
   const deleteAllRequests = useMutation({
