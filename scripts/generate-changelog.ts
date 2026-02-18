@@ -6,7 +6,9 @@ console.log("Found tags: ", await simpleGit().tags());
 const logs = await simpleGit().log();
 console.log("Found logs: ", logs.total);
 
-fs.writeFileSync("dist/CHANGELOG.md", formatChangeLog(buildLogsByTag(logs.all)));
+const logsByTag = buildLogsByTag(logs.all);
+console.log(logsByTag)
+fs.writeFileSync("dist/CHANGELOG.md", formatChangeLog(logsByTag));
 
 function buildLogsByTag(logs: readonly DefaultLogFields[]): Record<string, DefaultLogFields[]> {
   const groups = logs.toReversed().reduce(
