@@ -41,6 +41,7 @@ type BodyPattern = unknown;
 
 export interface Mapping {
   id: string;
+  index: number;
   uuid: string;
   priority?: number;
   request: {
@@ -49,6 +50,7 @@ export interface Mapping {
     urlPath?: string;
     urlPathPattern?: string;
     urlPattern?: string;
+    displayUrlPath?: string;
     headers?: Record<string, string>;
     bodyPatterns?: BodyPattern[];
   };
@@ -71,12 +73,16 @@ export function useWiremockMappings(serverId: string) {
   const { requests } = useWiremockRequests(serverId);
   const mappings = useQuery({
     queryKey: [server?.url, "admin", "mappings"],
-    queryFn: () => getAdminReq<Mappings>(server?.url, "mappings").then(res => {
-      res.mappings.forEach(mapping => {
-        mapping.matchedBy = requests.data?.requests.filter(request => request.stubMapping?.id === mapping.id) ?? [];
-      });
-      return res;
-    }),
+    queryFn: () =>
+      getAdminReq<Mappings>(server?.url, "mappings").then((res) => {
+        res.mappings.forEach((mapping, index) => {
+          mapping.index = index;
+          const mr = mapping.request;
+          mr.displayUrlPath = mr.urlPathPattern ?? mr.urlPattern ?? mr.urlPath ?? mr.url;
+          mapping.matchedBy = requests.data?.requests.filter((request) => request.stubMapping?.id === mapping.id) ?? [];
+        });
+        return res;
+      }),
   });
 
   const deleteOneMapping = useMutation({

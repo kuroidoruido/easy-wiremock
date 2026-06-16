@@ -62,6 +62,19 @@ button {
   margin-bottom: 1rem;
 }
 
+section.filters {
+  display: flex;
+  justify-content: space-between;
+
+  &:has(:first-child:last-child) {
+    justify-content: end;
+  }
+
+  select {
+    width: fit-content;
+  }
+}
+
 .btn-dropdown {
   position: relative;
   ul.btn-dropdown-menu {

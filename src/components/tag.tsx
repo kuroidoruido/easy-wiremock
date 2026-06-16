@@ -8,7 +8,11 @@ export interface TagProps {
 }
 
 export function Tag({ tag, title }: TagProps) {
-  return <span className="tag" {...(isDefinedAndNotEmpty(title) ? ({title}) : {})}>{tag}</span>;
+  return (
+    <span className="tag" {...(isDefinedAndNotEmpty(title) ? { title } : {})}>
+      {tag}
+    </span>
+  );
 }
 
 export function TagContainer({ children }: PropsWithChildren) {

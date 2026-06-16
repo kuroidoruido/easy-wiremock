@@ -7,7 +7,7 @@ const logs = await simpleGit().log();
 console.log("Found logs: ", logs.total);
 
 const logsByTag = buildLogsByTag(logs.all);
-console.log(logsByTag)
+console.log(logsByTag);
 fs.writeFileSync("dist/CHANGELOG.md", formatChangeLog(logsByTag));
 
 function buildLogsByTag(logs: readonly DefaultLogFields[]): Record<string, DefaultLogFields[]> {
@@ -35,7 +35,9 @@ function formatChangeLog(logs: Record<string, DefaultLogFields[]>): string {
       [
         `## ${tag} (${formatTagDate(logs[logs.length - 1].date)})`,
         "",
-        ...logs.filter((l) => l.message.match(/^release \d+\.\d+\.\d+$/) == null).map((l) => `- ${l.message}${addAuthorNotCreator(l)}`),
+        ...logs
+          .filter((l) => l.message.match(/^release \d+\.\d+\.\d+$/) == null)
+          .map((l) => `- ${l.message}${addAuthorNotCreator(l)}`),
         "",
       ].join("\n"),
     );
@@ -54,16 +56,16 @@ function addAuthorNotCreator(log: DefaultLogFields): string {
 }
 
 function semVerSort(a: string, b: string): number {
-  const [aMajor, aMinor, aPatch] = (a ?? '').split('.');
-  const [bMajor, bMinor, bPatch] = (b ?? '').split('.');
+  const [aMajor, aMinor, aPatch] = (a ?? "").split(".");
+  const [bMajor, bMinor, bPatch] = (b ?? "").split(".");
   if (aMajor !== bMajor) {
-    return Number.parseInt(aMajor, 10) - Number.parseInt(bMajor, 10)
+    return Number.parseInt(aMajor, 10) - Number.parseInt(bMajor, 10);
   }
   if (aMinor !== bMinor) {
-    return Number.parseInt(aMinor, 10) - Number.parseInt(bMinor, 10)
+    return Number.parseInt(aMinor, 10) - Number.parseInt(bMinor, 10);
   }
   if (aPatch !== bPatch) {
-    return Number.parseInt(aPatch, 10) - Number.parseInt(bPatch, 10)
+    return Number.parseInt(aPatch, 10) - Number.parseInt(bPatch, 10);
   }
   return a.localeCompare(b);
 }
