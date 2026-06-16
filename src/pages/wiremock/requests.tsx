@@ -10,7 +10,7 @@ import { useState } from "react";
 
 export function WiremockRequests({ serverId }: PropsWithServerId) {
   const { requests, deleteAllRequests } = useWiremockRequests(serverId);
-  const [filters, setFilters] = useState({ method: "All" as string, status: "All" as "All" | number });
+  const [filters, setFilters] = useState({ method: "All" as string, urlPath: "", status: "All" as "All" | number });
   const filteredRequests = (requests.data?.requests ?? []).filter((request) => {
     if (filters.method !== "All" && request.request.method !== filters.method) {
       return false;
@@ -18,7 +18,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
     if (filters.status !== "All" && request.response.status !== filters.status) {
       return false;
     }
-    return true;
+    return request.request.displayUrlPath?.includes(filters.urlPath);
   });
   const presentMethods =
     requests.data?.requests
@@ -48,6 +48,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
             </option>
           ))}
         </select>
+        <input type="text" value={filters.urlPath} onChange={e => setFilters({ ...filters, urlPath: e.target.value })} />
         <select
           onChange={(e) =>
             setFilters({ ...filters, status: e.target.value === "All" ? "All" : Number.parseInt(e.target.value, 10) })
@@ -67,7 +68,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
           <details className="request-entry" key={request.id}>
             <summary>
               <span>
-                <MethodTag method={request.request.method} /> {request.request.url ?? request.request.absoluteUrl}
+                <MethodTag method={request.request.method} /> {request.request.displayUrlPath}
               </span>
               <span>
                 {request.response.statusEmoji} {request.response.status}

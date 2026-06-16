@@ -119,6 +119,7 @@ export interface WRequest {
   request: {
     url: string;
     absoluteUrl: string;
+    displayUrlPath: string;
     method: Method;
     clientIp: string;
     headers: Record<string, string>;
@@ -172,6 +173,7 @@ export function useWiremockRequests(serverId: string) {
       getAdminReq<Requests>(server?.url, "requests").then((res) => {
         res.requests.forEach((req) => {
           req.response.statusEmoji = getStatusEmoji(req.response.status);
+          req.request.displayUrlPath = req.request.url ?? req.request.absoluteUrl
         });
         return res;
       }),
