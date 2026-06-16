@@ -62,13 +62,18 @@ button {
   margin-bottom: 1rem;
 }
 
+section.sorts {
+  display: flex;
+  justify-content: end;
+
+  select {
+    width: fit-content;
+  }
+}
+
 section.filters {
   display: flex;
   justify-content: space-between;
-
-  &:has(:first-child:last-child) {
-    justify-content: end;
-  }
 
   select {
     width: fit-content;

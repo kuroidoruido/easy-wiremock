@@ -51,7 +51,7 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
           🗑️ Delete all mappings
         </button>
       </div>
-      <section className="filters">
+      <section className="sorts">
         <label>
           Sort by:{" "}
           <select onChange={(e) => setSortBy(e.target.value as SortType)} value={sortBy}>

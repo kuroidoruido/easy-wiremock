@@ -2,14 +2,48 @@ import { isDefined } from "@anthonypena/fp";
 import { MethodTag } from "../../components/method-tag";
 import { ObjectAsTable } from "../../components/object-as-table";
 import { RawJson } from "../../components/raw-json";
-import { useWiremockRequests } from "../../services/wiremock";
+import { useWiremockRequests, WRequest } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
 
 import "./requests.css";
 import { useState } from "react";
 
+type SortConfig = { label: string; comparator: (a: WRequest, b: WRequest) => number };
+const SORT = {
+  byDeclarationOrder: {
+    label: "Default",
+    comparator: (a, b) => a.index - b.index,
+  } satisfies SortConfig,
+  byPath: {
+    label: "URL Path",
+    comparator: (a, b) => {
+      if (a.request.displayUrlPath !== b.request.displayUrlPath) {
+        return (a.request.displayUrlPath ?? "").localeCompare(b.request.displayUrlPath ?? "");
+      }
+      return (a.request.method ?? "").localeCompare(b.request.method ?? "");
+    },
+  } satisfies SortConfig,
+  byMethod: {
+    label: "Method",
+    comparator: (a, b) => {
+      if (a.request.method !== b.request.method) {
+        return (a.request.method ?? "").localeCompare(b.request.method ?? "");
+      }
+      return (a.request.displayUrlPath ?? "").localeCompare(b.request.displayUrlPath ?? "");
+    },
+  } satisfies SortConfig,
+  byStatus: {
+    label: "Status",
+    comparator: (a, b) => {
+      return a.response.status - b.response.status;
+    },
+  } satisfies SortConfig,
+} as const;
+type SortType = keyof typeof SORT;
+
 export function WiremockRequests({ serverId }: PropsWithServerId) {
   const { requests, deleteAllRequests } = useWiremockRequests(serverId);
+    const [sortBy, setSortBy] = useState<SortType>("byDeclarationOrder");
   const [filters, setFilters] = useState({ method: "All" as string, urlPath: "", status: "All" as "All" | number });
   const filteredRequests = (requests.data?.requests ?? []).filter((request) => {
     if (filters.method !== "All" && request.request.method !== filters.method) {
@@ -19,7 +53,7 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
       return false;
     }
     return request.request.displayUrlPath?.includes(filters.urlPath);
-  });
+  }).toSorted(SORT[sortBy].comparator);
   const presentMethods =
     requests.data?.requests
       .map((request) => request.request.method)
@@ -39,6 +73,18 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
           🗑️ Delete all requests
         </button>
       </div>
+      <section className="sorts">
+        <label>
+          Sort by:{" "}
+          <select onChange={(e) => setSortBy(e.target.value as SortType)} value={sortBy}>
+            {Object.entries(SORT).map(([key, { label }]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
+      </section>
       <section className="filters">
         <select onChange={(e) => setFilters({ ...filters, method: e.target.value })} value={filters.method}>
           <option value="All">All</option>
