@@ -43,6 +43,18 @@ type SortType = keyof typeof SORT;
 export function WiremockMappings({ serverId }: PropsWithServerId) {
   const { mappings, deleteOneMapping, deleteAllMappings } = useWiremockMappings(serverId);
   const [sortBy, setSortBy] = useState<SortType>("byDeclarationOrder");
+    const [filters, setFilters] = useState({ method: "All" as string, urlPath: "" });
+    const filteredMappings = (mappings.data?.mappings ?? []).filter((mapping) => {
+      if (filters.method !== "All" && mapping.request.method !== filters.method) {
+        return false;
+      }
+      return mapping.request.displayUrlPath?.includes(filters.urlPath);
+    }).toSorted(SORT[sortBy].comparator);
+  const presentMethods =
+    mappings.data?.mappings
+      .map((request) => request.request.method)
+      .filter(isDefined)
+      .reduce((acc, method) => ({ ...acc, [method]: (acc[method] ?? 0) + 1 }), {} as Record<string, number>) ?? {};
   return (
     <>
       <div className="page-heading-row">
@@ -63,8 +75,19 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
           </select>
         </label>
       </section>
+      <section className="filters">
+        <select onChange={(e) => setFilters({ ...filters, method: e.target.value })} value={filters.method}>
+          <option value="All">All</option>
+          {Object.entries(presentMethods).map(([method, count]) => (
+            <option key={method} value={method}>
+              {method} ({count})
+            </option>
+          ))}
+        </select>
+        <input type="text" value={filters.urlPath} onChange={e => setFilters({ ...filters, urlPath: e.target.value })} />
+      </section>
       <section className="mappings">
-        {mappings.data?.mappings.toSorted(SORT[sortBy].comparator).map((mapping) => (
+        {filteredMappings.map((mapping) => (
           <details className="mapping-entry" key={mapping.id}>
             <summary>
               <MethodTag method={mapping.request.method} />{" "}
