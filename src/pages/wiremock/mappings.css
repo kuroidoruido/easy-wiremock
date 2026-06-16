@@ -13,6 +13,12 @@
       margin: 0;
       & > summary {
         padding-left: 1rem;
+        display: flex;
+        justify-content: flex-start;
+
+        .entry-url {
+          flex: 1;
+        }
       }
     }
   }

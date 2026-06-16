@@ -6,6 +6,7 @@ import { useWiremockMappings } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
 
 import "./mappings.css";
+import { Tag } from "../../components/tag.tsx";
 
 export function WiremockMappings({ serverId }: PropsWithServerId) {
   const { mappings, deleteOneMapping, deleteAllMappings } = useWiremockMappings(serverId);
@@ -22,10 +23,13 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
           <details className="mapping-entry" key={mapping.id}>
             <summary>
               <MethodTag method={mapping.request.method} />{" "}
-              {mapping.request.urlPathPattern ??
-                mapping.request.urlPattern ??
-                mapping.request.urlPath ??
-                mapping.request.url}
+              <span className="entry-url">
+                {mapping.request.urlPathPattern ??
+                  mapping.request.urlPattern ??
+                  mapping.request.urlPath ??
+                  mapping.request.url}
+              </span>
+              <Tag tag={String(mapping.matchedBy.length)} title={`${mapping.matchedBy.length} requests matched this stub`} />
             </summary>
             <section>
               <h3>Quick actions</h3>

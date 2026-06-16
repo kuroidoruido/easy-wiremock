@@ -62,14 +62,21 @@ export interface Mapping {
     base64Body?: string;
   };
   metadata?: Record<string, unknown>;
+  matchedBy: WRequest[];
 }
 
 export function useWiremockMappings(serverId: string) {
   const server = useServer(serverId);
   const client = useQueryClient();
+  const { requests } = useWiremockRequests(serverId);
   const mappings = useQuery({
     queryKey: [server?.url, "admin", "mappings"],
-    queryFn: () => getAdminReq<Mappings>(server?.url, "mappings"),
+    queryFn: () => getAdminReq<Mappings>(server?.url, "mappings").then(res => {
+      res.mappings.forEach(mapping => {
+        mapping.matchedBy = requests.data?.requests.filter(request => request.stubMapping?.id === mapping.id) ?? [];
+      });
+      return res;
+    }),
   });
 
   const deleteOneMapping = useMutation({
