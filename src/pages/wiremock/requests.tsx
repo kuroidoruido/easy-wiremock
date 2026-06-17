@@ -1,11 +1,13 @@
-import { isDefined } from "@anthonypena/fp";
+import { isDefined, isDefinedAndNotEmpty } from "@anthonypena/fp";
 import { MethodTag } from "../../components/method-tag";
 import { ObjectAsTable } from "../../components/object-as-table";
 import { RawJson } from "../../components/raw-json";
 import { useWiremockRequests, WRequest } from "../../services/wiremock";
-import { PropsWithServerId } from "../../utils/router";
-
 import "./requests.css";
+import { Tag } from "../../components/tag.tsx";
+import { Link, useLinkProps } from "@swan-io/chicane";
+import { Router } from "../../config/router.tsx";
+import { PropsWithServerId } from "../../utils/router";
 import { useState } from "react";
 
 type SortConfig = { label: string; comparator: (a: WRequest, b: WRequest) => number };
@@ -41,19 +43,34 @@ const SORT = {
 } as const;
 type SortType = keyof typeof SORT;
 
-export function WiremockRequests({ serverId }: PropsWithServerId) {
+interface WiremockRequests extends PropsWithServerId {
+  matchingStub?: string;
+}
+
+export function WiremockRequests({ serverId, matchingStub }: WiremockRequests) {
   const { requests, deleteAllRequests } = useWiremockRequests(serverId);
-    const [sortBy, setSortBy] = useState<SortType>("byDeclarationOrder");
-  const [filters, setFilters] = useState({ method: "All" as string, urlPath: "", status: "All" as "All" | number });
-  const filteredRequests = (requests.data?.requests ?? []).filter((request) => {
-    if (filters.method !== "All" && request.request.method !== filters.method) {
-      return false;
-    }
-    if (filters.status !== "All" && request.response.status !== filters.status) {
-      return false;
-    }
-    return request.request.displayUrlPath?.includes(filters.urlPath);
-  }).toSorted(SORT[sortBy].comparator);
+  const { onClick: reloadCurrentRouteWithoutFilters } = useLinkProps({ href: Router.WiremockRequests({ serverId }) });
+  const [sortBy, setSortBy] = useState<SortType>("byDeclarationOrder");
+  const [filters, setFilters] = useState({
+    matchingStub,
+    method: "All" as string,
+    urlPath: "",
+    status: "All" as "All" | number,
+  });
+  const filteredRequests = (requests.data?.requests ?? [])
+    .filter((request) => {
+      if (isDefinedAndNotEmpty(filters.matchingStub) && request.stubMapping?.id !== filters.matchingStub) {
+        return false;
+      }
+      if (filters.method !== "All" && request.request.method !== filters.method) {
+        return false;
+      }
+      if (filters.status !== "All" && request.response.status !== filters.status) {
+        return false;
+      }
+      return request.request.displayUrlPath?.includes(filters.urlPath);
+    })
+    .toSorted(SORT[sortBy].comparator);
   const presentMethods =
     requests.data?.requests
       .map((request) => request.request.method)
@@ -64,6 +81,11 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
       .map((request) => request.response.status)
       .filter(isDefined)
       .reduce((acc, status) => ({ ...acc, [status]: (acc[status] ?? 0) + 1 }), {} as Record<number, number>) ?? {};
+
+  const onRemoveMatchingStubFilter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    reloadCurrentRouteWithoutFilters(e);
+    setFilters({ ...filters, matchingStub: undefined });
+  };
 
   return (
     <>
@@ -94,7 +116,11 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
             </option>
           ))}
         </select>
-        <input type="text" value={filters.urlPath} onChange={e => setFilters({ ...filters, urlPath: e.target.value })} />
+        <input
+          type="text"
+          value={filters.urlPath}
+          onChange={(e) => setFilters({ ...filters, urlPath: e.target.value })}
+        />
         <select
           onChange={(e) =>
             setFilters({ ...filters, status: e.target.value === "All" ? "All" : Number.parseInt(e.target.value, 10) })
@@ -109,6 +135,15 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
           ))}
         </select>
       </section>
+      {isDefinedAndNotEmpty(matchingStub) && (
+        <section className="filter">
+          <Tag
+            tag={`Matching stub: ${matchingStub}`}
+            title="This request list is filtered by this stub mapping"
+            onDismiss={onRemoveMatchingStubFilter}
+          />
+        </section>
+      )}
       <section className="requests">
         {filteredRequests.map((request) => (
           <details className="request-entry" key={request.id}>
@@ -126,7 +161,15 @@ export function WiremockRequests({ serverId }: PropsWithServerId) {
                 json={{
                   id: request.id,
                   wasMatched: request.wasMatched,
-                  ...(request.wasMatched ? { stubMappingId: request.stubMapping?.id } : []),
+                  ...(request.wasMatched
+                    ? {
+                        stubMappingId: (
+                          <Link to={Router.WiremockMappings({ serverId, mappingId: request.stubMapping!.id! })}>
+                            {request.stubMapping?.id}
+                          </Link>
+                        ),
+                      }
+                    : []),
                 }}
               />
             </section>

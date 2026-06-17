@@ -175,7 +175,7 @@ export function useWiremockRequests(serverId: string) {
         res.requests.forEach((req, index) => {
           req.index = index;
           req.response.statusEmoji = getStatusEmoji(req.response.status);
-          req.request.displayUrlPath = req.request.url ?? req.request.absoluteUrl
+          req.request.displayUrlPath = req.request.url ?? req.request.absoluteUrl;
         });
         return res;
       }),

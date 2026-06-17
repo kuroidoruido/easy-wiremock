@@ -8,4 +8,13 @@
   padding: 0.125rem 0.5rem;
   border-radius: 1rem;
   background-color: var(--pico-secondary-background);
+
+  button {
+    border-radius: 50%;
+    padding: 0;
+    margin: 0.25rex 0 0 1rex;
+    height: 2rex;
+    width: 2rex;
+    line-height: 1rex;
+  }
 }

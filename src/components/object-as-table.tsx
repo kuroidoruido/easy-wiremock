@@ -1,6 +1,11 @@
+import React from "react";
 import "./object-as-table.css";
 
-export function ObjectAsTable({ json }: { json: object | undefined }) {
+export function ObjectAsTable({
+  json,
+}: {
+  json: object | Record<string, string | boolean | number | JSX.Element | unknown> | undefined;
+}) {
   return (
     <table className="object-as-table">
       <tbody>
@@ -16,6 +21,9 @@ export function ObjectAsTable({ json }: { json: object | undefined }) {
 }
 
 function formatValue(x: unknown) {
+  if (React.isValidElement(x)) {
+    return x;
+  }
   switch (typeof x) {
     case "boolean":
       return x ? "true" : "false";

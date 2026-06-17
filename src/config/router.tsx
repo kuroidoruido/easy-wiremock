@@ -12,8 +12,8 @@ export const Router = createRouter({
   Changelogs: "/changelogs",
   Wiremock: "/wiremock/:serverId",
   ...createGroup("Wiremock", "wiremock/:serverId", {
-    Mappings: "/mappings",
-    Requests: "/requests",
+    Mappings: "/mappings?:mappingId",
+    Requests: "/requests?:matchingStub",
   }),
 });
 

@@ -1,13 +1,15 @@
-import { isDefined } from "@anthonypena/fp";
+import { isDefined, isDefinedAndNotEmpty } from "@anthonypena/fp";
 import { MethodTag } from "../../components/method-tag";
 import { ObjectAsTable } from "../../components/object-as-table";
 import { RawJson } from "../../components/raw-json";
 import { Mapping, useWiremockMappings } from "../../services/wiremock";
 import { PropsWithServerId } from "../../utils/router";
-
-import "./mappings.css";
 import { Tag } from "../../components/tag.tsx";
 import { useState } from "react";
+import { useLinkProps } from "@swan-io/chicane";
+import { Router } from "../../config/router.tsx";
+
+import "./mappings.css";
 
 type SortConfig = { label: string; comparator: (a: Mapping, b: Mapping) => number };
 const SORT = {
@@ -40,21 +42,37 @@ const SORT = {
 } as const;
 type SortType = keyof typeof SORT;
 
-export function WiremockMappings({ serverId }: PropsWithServerId) {
+interface WiremockMappingsProps extends PropsWithServerId {
+  mappingId?: string;
+}
+
+export function WiremockMappings({ serverId, mappingId }: WiremockMappingsProps) {
   const { mappings, deleteOneMapping, deleteAllMappings } = useWiremockMappings(serverId);
+  const { onClick: reloadCurrentRouteWithoutFilters } = useLinkProps({ href: Router.WiremockRequests({ serverId }) });
   const [sortBy, setSortBy] = useState<SortType>("byDeclarationOrder");
-    const [filters, setFilters] = useState({ method: "All" as string, urlPath: "" });
-    const filteredMappings = (mappings.data?.mappings ?? []).filter((mapping) => {
+  const [filters, setFilters] = useState({ id: mappingId, method: "All" as string, urlPath: "" });
+  const filteredMappings = (mappings.data?.mappings ?? [])
+    .filter((mapping) => {
+      if (isDefinedAndNotEmpty(filters.id) && mapping.id !== filters.id) {
+        return false;
+      }
       if (filters.method !== "All" && mapping.request.method !== filters.method) {
         return false;
       }
       return mapping.request.displayUrlPath?.includes(filters.urlPath);
-    }).toSorted(SORT[sortBy].comparator);
+    })
+    .toSorted(SORT[sortBy].comparator);
   const presentMethods =
     mappings.data?.mappings
       .map((request) => request.request.method)
       .filter(isDefined)
       .reduce((acc, method) => ({ ...acc, [method]: (acc[method] ?? 0) + 1 }), {} as Record<string, number>) ?? {};
+
+  const onRemoveMapppingIdFilter = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    reloadCurrentRouteWithoutFilters(e);
+    setFilters({ ...filters, id: undefined });
+  };
+
   return (
     <>
       <div className="page-heading-row">
@@ -84,8 +102,21 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
             </option>
           ))}
         </select>
-        <input type="text" value={filters.urlPath} onChange={e => setFilters({ ...filters, urlPath: e.target.value })} />
+        <input
+          type="text"
+          value={filters.urlPath}
+          onChange={(e) => setFilters({ ...filters, urlPath: e.target.value })}
+        />
       </section>
+      {isDefinedAndNotEmpty(mappingId) && (
+        <section className="filter">
+          <Tag
+            tag={`Only stub: ${mappingId}`}
+            title="This mapping is filtered to show only this stub."
+            onDismiss={onRemoveMapppingIdFilter}
+          />
+        </section>
+      )}
       <section className="mappings">
         {filteredMappings.map((mapping) => (
           <details className="mapping-entry" key={mapping.id}>
@@ -99,17 +130,16 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
             </summary>
             <section>
               <h3>Quick actions</h3>
-              <button className="danger" onClick={() => deleteOneMapping.mutate(mapping.id)}>
-                🗑️ Delete
-              </button>
+              <div className="quick-actions">
+                <button type="button" className="danger" onClick={() => deleteOneMapping.mutate(mapping.id)}>
+                  🗑️ Delete
+                </button>
+                <ShowMatchedRequests serverId={serverId} stubId={mapping.id} />
+              </div>
             </section>
             <section>
               <h3>General Infos</h3>
-              <ObjectAsTable
-                json={{
-                  id: mapping.id,
-                }}
-              />
+              <ObjectAsTable json={{ id: mapping.id }} />
             </section>
             {isDefined(mapping.metadata) && (
               <section>
@@ -131,5 +161,19 @@ export function WiremockMappings({ serverId }: PropsWithServerId) {
       </section>
       <RawJson label="Raw mappings" json={mappings.data} />
     </>
+  );
+}
+
+interface ShowMatchedRequestsProps {
+  serverId: string;
+  stubId: string;
+}
+
+function ShowMatchedRequests({ serverId, stubId }: ShowMatchedRequestsProps) {
+  const { onClick } = useLinkProps({ href: Router.WiremockRequests({ serverId, matchingStub: stubId }) });
+  return (
+    <button type="button" onClick={onClick}>
+      Show matched requests
+    </button>
   );
 }

@@ -20,6 +20,10 @@
           flex: 1;
         }
       }
+      .quick-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
     }
   }
 }
