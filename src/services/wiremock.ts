@@ -48,6 +48,7 @@ export interface Mapping {
     method?: Method;
     url?: string;
     urlPath?: string;
+    urlPathTemplate?: string;
     urlPathPattern?: string;
     urlPattern?: string;
     displayUrlPath?: string;
@@ -78,7 +79,7 @@ export function useWiremockMappings(serverId: string) {
         res.mappings.forEach((mapping, index) => {
           mapping.index = index;
           const mr = mapping.request;
-          mr.displayUrlPath = mr.urlPathPattern ?? mr.urlPattern ?? mr.urlPath ?? mr.url;
+          mr.displayUrlPath = mr.urlPathTemplate ?? mr.urlPathPattern ?? mr.urlPattern ?? mr.urlPath ?? mr.url;
           mapping.matchedBy = requests.data?.requests.filter((request) => request.stubMapping?.id === mapping.id) ?? [];
         });
         return res;
