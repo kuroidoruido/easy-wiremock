@@ -1,0 +1,5 @@
+.top-warning {
+  background: var(--pico-color-pumpkin-300);
+  color: black;
+  border-radius: 0;
+}
