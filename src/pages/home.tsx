@@ -4,7 +4,7 @@ import { Server, useServer, useServers } from "../services/servers";
 import { useSubmitCallback } from "../utils/form";
 
 import "./home.css";
-import { isDefinedAndNotEmpty } from "@anthonypena/fp";
+import { isDefinedAndNotEmpty, isNotDefined } from "@anthonypena/fp";
 
 export function Home() {
   return (
@@ -22,6 +22,7 @@ function ServerList() {
   const isEditing = isDefinedAndNotEmpty(editingServer);
   return (
     <>
+      <ImportExportSection />
       <section className="server-list">
         <h2>Choose your server</h2>
         {serversByTag.map((group) => (
@@ -103,5 +104,59 @@ export function EditServerModal({ serverId, onClose }: EditServerModalProps) {
         </form>
       </article>
     </dialog>
+  );
+}
+
+function useImportExport(servers: Server[]) {
+  const exportLink = `data:application/json;charset=utf-8,${encodeURI(JSON.stringify(servers))}`;
+  const now = new Date();
+  const exportFileName = `easy-wiremock-${now.getFullYear()}-${now.getMonth() < 9 ? "0" + (now.getMonth() + 1) : now.getMonth() + 1}-${now.getDate()}.json`;
+
+  return { exportLink, exportFileName } as const;
+}
+
+function ImportExportSection() {
+  const { servers, pushOneServer } = useServers();
+  const { exportLink, exportFileName } = useImportExport(servers.data ?? []);
+  const [showImportDialog, setShowImportDialog] = useState(false);
+
+  const onSubmit = useSubmitCallback<{ config: File }>(async (formState) => {
+    if (isNotDefined(formState) || isNotDefined(formState.config) || formState.config.size === 0) {
+      return;
+    }
+    setShowImportDialog(false);
+    const servers: Server[] = JSON.parse(await formState.config.text());
+    servers.forEach((s) => pushOneServer.mutate(s));
+  });
+
+  return (
+    <section className="import-export container-fluid">
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", justifyContent: "end" }}>
+        <a role="button" href={exportLink} download={exportFileName}>
+          Export servers
+        </a>
+        <button type="button" onClick={() => setShowImportDialog(true)} style={{ marginBottom: "0" }}>
+          Import servers
+        </button>
+      </div>
+      <dialog id="import-servers-dialog" open={showImportDialog}>
+        <form onSubmit={onSubmit}>
+          <article>
+            <header>
+              <label htmlFor="import-server-file">Choose a server files</label>
+            </header>
+            <input id="import-server-file" type="file" name="config" />
+            <footer>
+              <button className="secondary" type="button" onClick={() => setShowImportDialog(false)}>
+                Cancel
+              </button>
+              <button type="submit" style={{ width: "unset" }}>
+                Import
+              </button>
+            </footer>
+          </article>
+        </form>
+      </dialog>
+    </section>
   );
 }
