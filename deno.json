@@ -1,5 +1,24 @@
 {
   "tasks": {
     "serve": "deno run --allow-net --allow-read --allow-env deno-deploy-router.ts"
+  },
+  "deploy": {
+    "org": "kuroidoruido",
+    "app": "easy-wiremock",
+    "exclude": [
+      ".github/",
+      "node_modules/",
+      "scripts/",
+      ".gitignore",
+      ".prettierrc",
+      "README.md",
+      "eslint.config.js",
+      "package-lock.json",
+      "package.json",
+      "tsconfig.app.json",
+      "tsconfig.node.json"
+    ],
+    "include": ["./dist/", "./deno-deploy-router.ts"]
   }
 }
+

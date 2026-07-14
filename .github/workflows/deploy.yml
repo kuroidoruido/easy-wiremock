@@ -1,9 +1,9 @@
 name: Deploy
 on:
   push:
-    branches: main
+    branches: 
+      - main
   pull_request:
-    branches: main
 
 jobs:
   deploy:
@@ -41,6 +41,14 @@ jobs:
         run: "npm run build"
 
       - name: Upload to Deno Deploy
+        if: github.ref == 'refs/heads/main'
+        env:
+          DENO_DEPLOY_TOKEN: ${{ secrets.DENO_DEPLOY_TOKEN }}
+        run: 
+          deno deploy --prod
+      
+      - name: Upload to Deno Deploy legacy
+        if: github.ref == 'refs/heads/main'
         uses: denoland/deployctl@v1
         with:
           project: "anthonypena-easy-wiremock"

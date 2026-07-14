@@ -1,6 +1,6 @@
 import { serveDir, serveFile } from "jsr:@std/http/file-server";
 
-const PORT = Number(Deno.env.get("PORT")) || 3000;
+const PORT = Number.parseInt(Deno.env.get("PORT") ?? "3000", 10);
 
 console.log("PORT", PORT);
 
