@@ -47,10 +47,3 @@ jobs:
         run: 
           deno deploy --prod
       
-      - name: Upload to Deno Deploy legacy
-        if: github.ref == 'refs/heads/main'
-        uses: denoland/deployctl@v1
-        with:
-          project: "anthonypena-easy-wiremock"
-          entrypoint: "./deno-deploy-router.ts"
-          root: "."
